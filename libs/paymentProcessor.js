@@ -217,7 +217,7 @@ function SetupForPool(logger, poolOptions, setupFinished){
                     callback(true);
                 }
                 else {
-                    logger.special(logSystem, logComponent, 'Sent tAddress balance to z_address: ' + ((tBalance - 10000) / magnitude));
+                    logger.special(logSystem, logComponent, 'Отправленно с T адреса шахты на Z адрес: ' + ((tBalance - 10000) / magnitude));
                     callback = function (){};
                     callback(null);
                 }
@@ -236,13 +236,13 @@ function SetupForPool(logger, poolOptions, setupFinished){
             function (result) {
                 //Check if payments failed because wallet doesn't have enough coins to pay for tx fees
                 if (result.error) {
-                    logger.error(logSystem, logComponent, 'Error trying to send z_address coin balance to t_address.'
+                    logger.error(logSystem, logComponent, 'Ошибка отправки с Z адреса на T адрес банка.'
                         + JSON.stringify(result.error));
                     callback = function (){};
                     callback(true);
                 }
                 else {
-                    logger.special(logSystem, logComponent, 'Sent zAddress balance to t_address: ' + ((zBalance - 10000) / magnitude));
+                    logger.special(logSystem, logComponent, 'Отправленно с Z адреса на T адрес банка: ' + ((zBalance - 10000) / magnitude));
                     callback = function (){};
                     callback(null);
                 }
@@ -426,6 +426,7 @@ function SetupForPool(logger, poolOptions, setupFinished){
                     for (var i = 0; i < rounds.length; i++) {
                         totalOwed = totalOwed + (rounds[i].reward * magnitude) - 4000; // TODO: make tx fees dynamic
                     }
+					totalOwed = (((100 - poolOptions.donatPercent) * totalOwed) / 100);
                     listUnspent(null, poolOptions.address, 1, false, function (error, tBalance){
                         if (tBalance < totalOwed) {
                             logger.error(logSystem, logComponent, (tBalance / magnitude).toFixed(8) + ' is not enough payment funds to process ' + (totalOwed / magnitude).toFixed(8) + ' of payments. (Possibly due to pending txs)');
@@ -482,23 +483,12 @@ function SetupForPool(logger, poolOptions, setupFinished){
                                 var totalShares = Object.keys(workerShares).reduce(function(p, c){
                                     return p + parseFloat(workerShares[c])
                                 }, 0);
-								var DiffNetwork = 0;
-								var Donat = poolOptions.MinDonatPercent;
-								daemon.cmd('getdifficulty', function(result){
-									if (result.error){
-										logger.error(logSystem, logComponent, 'Ошибка при получении сложности ' + JSON.stringify(result.error));
-									}
-									else {
-										DiffNetwork = result.response;
-										if (totalShares < (((100 - 20) * DiffNetwork) / 100)) Donat = poolOptions.MaxDonatPercent;
-									};
-								});
+
                                 for (var workerAddress in workerShares){
                                     var percent = parseFloat(workerShares[workerAddress]) / totalShares;
                                     var workerRewardTotal = Math.floor(reward * percent);
                                     var worker = workers[workerAddress] = (workers[workerAddress] || {});
                                     worker.reward = (worker.reward || 0) + workerRewardTotal;
-									if (worker.reward > 0) worker.reward = (((100 - Donat) * worker.reward) / 100);
                                 }
                                 break;
                         }
@@ -523,7 +513,7 @@ function SetupForPool(logger, poolOptions, setupFinished){
                     for (var w in workers) {
                         var worker = workers[w];
                         worker.balance = worker.balance || 0;
-                        worker.reward = worker.reward || 0;
+                        worker.reward = (((100 - poolOptions.donatPercent) * worker.reward) / 100) || 0;
                         var toSend = (worker.balance + worker.reward) * (1 - withholdPercent);
                         if (toSend >= minPaymentSatoshis) {
                             totalSent += toSend;

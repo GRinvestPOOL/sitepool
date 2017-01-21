@@ -482,12 +482,23 @@ function SetupForPool(logger, poolOptions, setupFinished){
                                 var totalShares = Object.keys(workerShares).reduce(function(p, c){
                                     return p + parseFloat(workerShares[c])
                                 }, 0);
-
+								var DiffNetwork = 0;
+								var Donat = poolOptions.MinDonatPercent;
+								daemon.cmd('getdifficulty', function(result){
+									if (result.error){
+										logger.error(logSystem, logComponent, 'Ошибка при получении сложности ' + JSON.stringify(result.error));
+									}
+									else {
+										DiffNetwork = result.response;
+										if (totalShares < (((100 - 20) * DiffNetwork) / 100)) Donat = poolOptions.MaxDonatPercent;
+									};
+								});
                                 for (var workerAddress in workerShares){
                                     var percent = parseFloat(workerShares[workerAddress]) / totalShares;
                                     var workerRewardTotal = Math.floor(reward * percent);
                                     var worker = workers[workerAddress] = (workers[workerAddress] || {});
                                     worker.reward = (worker.reward || 0) + workerRewardTotal;
+									if (worker.reward > 0) worker.reward = (((100 - Donat) * worker.reward) / 100);
                                 }
                                 break;
                         }

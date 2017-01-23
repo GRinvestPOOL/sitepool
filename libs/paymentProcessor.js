@@ -217,7 +217,7 @@ function SetupForPool(logger, poolOptions, setupFinished){
                     callback(true);
                 }
                 else {
-                    logger.special(logSystem, logComponent, 'Отправленно с T адреса шахты на Z адрес: ' + ((tBalance - 10000) / magnitude));
+                    logger.special(logSystem, logComponent, 'Sent tAddress balance to z_address: ' + ((tBalance - 10000) / magnitude));
                     callback = function (){};
                     callback(null);
                 }
@@ -236,13 +236,13 @@ function SetupForPool(logger, poolOptions, setupFinished){
             function (result) {
                 //Check if payments failed because wallet doesn't have enough coins to pay for tx fees
                 if (result.error) {
-                    logger.error(logSystem, logComponent, 'Ошибка отправки с Z адреса на T адрес банка.'
+                    logger.error(logSystem, logComponent, 'Error trying to send z_address coin balance to t_address.'
                         + JSON.stringify(result.error));
                     callback = function (){};
                     callback(true);
                 }
                 else {
-                    logger.special(logSystem, logComponent, 'Отправленно с Z адреса на T адрес банка: ' + ((zBalance - 10000) / magnitude));
+                    logger.special(logSystem, logComponent, 'Sent zAddress balance to t_address: ' + ((zBalance - 10000) / magnitude));
                     callback = function (){};
                     callback(null);
                 }

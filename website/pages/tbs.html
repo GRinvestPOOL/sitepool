@@ -35,16 +35,16 @@
 <table class="pure-table">
     <thead>
     <tr>
-        <th>Pool</th>
-        <th>Algo</th>
-        <th>Workers</th>
-        <th>Valid Shares</th>
-        <th>Invalid Shares</th>
-        <th>Total Blocks</th>
-        <th>Pending</th>
-        <th>Confirmed</th>
-        <th>Orphaned</th>
-        <th>Hashrate</th>
+        <th>Монета</th>
+        <th>Алгоритм</th>
+        <th>Шахтёры</th>
+        <th>Принятые решения</th>
+        <th>Отклонёные решения</th>
+        <th>Всего блоков</th>
+        <th>Находятся на подтверждении</th>
+        <th>Подтвердилось и перевелось</th>
+        <th>Осиротевшие блоки</th>
+        <th>Мощность на шахте</th>
     </tr>
     </thead>
     {{ for(var pool in it.stats.pools) { }}

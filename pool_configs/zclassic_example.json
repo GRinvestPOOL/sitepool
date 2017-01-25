@@ -1,5 +1,5 @@
 {
-    "enabled": false,
+    "enabled": true,
     "coin": "zclassic.json",
 
     "address": "t1VBratBCE2msYVa2X5UydGZJF9VDDG3y5X",
@@ -20,33 +20,37 @@
 
     "paymentProcessing": {
         "enabled": true,
-        "paymentInterval": 20,
+        "paymentInterval": 120,
         "minimumPayment": 0.1,
         "daemon": {
             "host": "127.0.0.1",
-            "port": 19332,
+            "port": 8101,
             "user": "testuser",
             "password": "testpass"
         }
     },
 
     "ports": {
-        "3032": {
-            "diff": 0.05,
+        "3101": {
+            "diff": 0.16
+        },
+        "3102": {
+            "diff": 10,
             "varDiff": {
-                "minDiff": 0.04,
-                "maxDiff": 16,
+                "minDiff": 2.3,
+                "maxDiff": 100,
                 "targetTime": 15,
-                "retargetTime": 60,
+                "retargetTime": 20,
                 "variancePercent": 30
             }
+
         }
     },
 
     "daemons": [
         {
             "host": "127.0.0.1",
-            "port": 12177,
+            "port": 8101,
             "user": "rpcuser",
             "password": "rpcpassword"
         }
